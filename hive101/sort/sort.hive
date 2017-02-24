@@ -1,0 +1,35 @@
+set mapred.reduce.tasks=3;
+
+DROP TABLE IF EXISTS records3;
+DROP TABLE IF EXISTS result_order;
+DROP TABLE IF EXISTS result_sort;
+DROP TABLE IF EXISTS result_distribute;
+
+CREATE TABLE records3 (station STRING, year STRING, temperature INT, quality INT)
+ROW FORMAT DELIMITED
+  FIELDS TERMINATED BY '\t';
+
+LOAD DATA LOCAL INPATH '/home/cloudera/Desktop/hive101/sort/data/sample3.txt'
+OVERWRITE INTO TABLE records3;
+
+CREATE TABLE result_order
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+AS
+SELECT year, temperature
+FROM records3
+ORDER BY year ASC, temperature DESC;
+
+CREATE TABLE result_sort
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+AS
+SELECT year, temperature
+FROM records3
+SORT BY year ASC, temperature DESC;
+
+CREATE TABLE result_distribute
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+AS
+SELECT year, temperature
+FROM records3
+DISTRIBUTE BY year
+SORT BY year ASC, temperature DESC;

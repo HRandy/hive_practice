@@ -1,0 +1,75 @@
+hive:
+CREATE EXTERNAL TABLE logs (ts BIGINT, line STRING)
+PARTITIONED BY (dt STRING);
+
+linux:
+hadoop fs -mkdir -p /user/cloudera/hive_in_practice/data/logs/20150701
+hadoop fs -put ~/Desktop/hive_in_practice/partition/data/file1 /user/cloudera/hive_in_practice/data/logs/20150701
+
+hive:
+ALTER TABLE logs ADD PARTITION (dt='20150701')
+LOCATION '/user/cloudera/hive_in_practice/data/logs/20150701';
+
+SHOW PARTITIONS logs;
+
+SELECT *
+FROM logs
+WHERE dt = '20150701';
+
+linux:
+hadoop fs -mkdir -p /user/cloudera/hive_in_practice/data/logs/20150702
+hadoop fs -put ~/Desktop/hive_in_practice/partition/data/file1 /user/cloudera/hive_in_practice/data/logs/20150702
+hadoop fs -mkdir -p /user/cloudera/hive_in_practice/data/logs/20150703
+hadoop fs -put ~/Desktop/hive_in_practice/partition/data/file1 /user/cloudera/hive_in_practice/data/logs/20150703
+hadoop fs -mkdir -p /user/cloudera/hive_in_practice/data/logs/20150704
+hadoop fs -put ~/Desktop/hive_in_practice/partition/data/file1 /user/cloudera/hive_in_practice/data/logs/20150704
+hadoop fs -mkdir -p /user/cloudera/hive_in_practice/data/logs/20150705
+hadoop fs -put ~/Desktop/hive_in_practice/partition/data/file1 /user/cloudera/hive_in_practice/data/logs/20150705
+
+hive:
+ALTER TABLE logs ADD
+PARTITION (dt='20150702') LOCATION '/user/cloudera/hive_in_practice/data/logs/20150702';
+ALTER TABLE logs ADD
+PARTITION (dt='20150703') LOCATION '/user/cloudera/hive_in_practice/data/logs/20150703';
+ALTER TABLE logs ADD
+PARTITION (dt='20150704') LOCATION '/user/cloudera/hive_in_practice/data/logs/20150704';
+ALTER TABLE logs ADD
+PARTITION (dt='20150705') LOCATION '/user/cloudera/hive_in_practice/data/logs/20150705';
+
+SHOW PARTITIONS logs;
+
+SELECT *
+FROM logs
+WHERE dt = '20150705';
+
+------------------------------------------------------------------------------------------------
+
+hive:
+CREATE EXTERNAL TABLE logs2 (ts BIGINT, line STRING)
+PARTITIONED BY (dt STRING, device STRING);
+
+linux:
+hadoop fs -mkdir -p /user/cloudera/hive_in_practice/data/logs2/20150701/android
+hadoop fs -put ~/Desktop/hive_in_practice/partition/data/file1 /user/cloudera/hive_in_practice/data/logs2/20150701/android
+hadoop fs -mkdir -p /user/cloudera/hive_in_practice/data/logs2/20150701/ios
+hadoop fs -put ~/Desktop/hive_in_practice/partition/data/file1 /user/cloudera/hive_in_practice/data/logs2/20150701/ios
+hadoop fs -mkdir -p /user/cloudera/hive_in_practice/data/logs2/20150702/android
+hadoop fs -put ~/Desktop/hive_in_practice/partition/data/file1 /user/cloudera/hive_in_practice/data/logs2/20150702/android
+hadoop fs -mkdir -p /user/cloudera/hive_in_practice/data/logs2/20150702/ios
+hadoop fs -put ~/Desktop/hive_in_practice/partition/data/file1 /user/cloudera/hive_in_practice/data/logs2/20150702/ios
+
+hive:
+ALTER TABLE logs2 ADD
+PARTITION (dt='20150701', device='ios') LOCATION '/user/cloudera/hive_in_practice/data/logs2/20150701/ios';
+ALTER TABLE logs2 ADD
+PARTITION (dt='20150701', device='android') LOCATION '/user/cloudera/hive_in_practice/data/logs2/20150701/android';
+ALTER TABLE logs2 ADD
+PARTITION (dt='20150702', device='ios') LOCATION '/user/cloudera/hive_in_practice/data/logs2/20150702/ios';
+ALTER TABLE logs2 ADD
+PARTITION (dt='20150702', device='android') LOCATION '/user/cloudera/hive_in_practice/data/logs2/20150702/android';
+
+SHOW PARTITIONS logs2;
+
+SELECT *
+FROM logs2
+WHERE device='android';

@@ -1,0 +1,32 @@
+-- external table
+
+linux:
+
+hadoop fs -mkdir hive101/temperature
+hadoop fs -put /home/cloudera/Desktop/hive101/temperature/data /user/cloudera/hive101/temperature
+
+
+hive:
+
+create external table test (record string)
+location '/user/cloudera/hive101/temperature/data';
+
+describe test;
+describe formatted test;
+
+select * from test;
+
+drop table test;
+
+-- managed table
+-- in hive shell
+
+Create table test2 (record string)
+location '/user/cloudera/hive101/temperature/data';
+
+describe test2;
+describe formatted test2;
+
+select * from test2;
+
+drop table test2;
